@@ -1,0 +1,182 @@
+{
+  "info": {
+    "title": "ReplicaService",
+    "description": "Support Scaling up and down Services in a Swarm",
+    "version": "1.0.0"
+  },
+  "swagger": "2.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "description": "Get Health of Service",
+        "tags": [
+          "health"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Health",
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/Health"
+            }
+          }
+        }
+      }
+    },
+    "/replicas": {
+      "get": {
+        "description": "Get Service Replicas Deployed in Swarm",
+        "tags": [
+          "replica"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Set of Replicas",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Replica"
+            }
+          }
+        }
+      }
+    },
+    "/replicas/{dockerServiceName}": {
+      "put": {
+        "description": "Get Service Replicas Deployed in Swarm",
+        "tags": [
+          "replica"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dockerServiceName",
+            "description": "Docker Service Name that needs scaling",
+            "require": true,
+            "in": "path"
+          },
+          {
+            "name": "increment",
+            "description": "Number of instances to remove/add ( based on sign of value. + add, - minus )",
+            "in": "query",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replica modified",
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/Replica"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Forbidden",
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "Unauthorized",
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Replica Not Found",
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "required": [
+        "errorMessage"
+      ],
+      "properties": {
+        "errorMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "Health": {
+      "type": "object",
+      "required": [
+        "cpuPercentUsage",
+        "loadAvg"
+      ],
+      "properties": {
+        "cpuPercentUsage": {
+          "type": "number"
+        },
+        "loadAvg": {
+          "type": "number"
+        }
+      }
+    },
+    "Replica": {
+      "type": "object",
+      "required": [
+        "serviceName",
+        "count"
+      ],
+      "properties": {
+        "serviceName": {
+          "type": "string"
+        },
+        "count": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {},
+  "tags": [
+    {
+      "name": "error",
+      "description": "Everything you need to know about Error"
+    },
+    {
+      "name": "health",
+      "description": "Everything you need to know about Health"
+    },
+    {
+      "name": "replica",
+      "description": "Everything you need to know about Replica"
+    }
+  ]
+}
