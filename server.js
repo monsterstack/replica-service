@@ -4,17 +4,27 @@ const config = require('config');
 const optimist = require('optimist');
 const express = require('express');
 const path = require('path');
+const _ = require('lodash');
 
+
+/**
+ * Start Server
+ * Options:
+ * --randomWorkerPort ( true or false ) Do we bind to a random port ( used for child process being managed by cluster )
+ *                    or do we use the standard config.port.
+ * --announce         ( true or false ) Do we announce ourselves to the Discovery Service
+ * --discoveryHost ( Where do I Announce myself?  Where is my Discovery Service)
+ * --overrides     ( path for config overrides )
+ */
 const main = () => {
-  let announce = false;
-  let useRandomWorkerPort = false;
-  let announcement = require('./announcement.json');
-  let typeQuery = require('./typeQuery.json');
-
   if(optimist.argv.overrides) {
     let overrides = require(optimist.argv.overrides);
     _.merge(config, overrides);
   }
+  let announce = false;
+  let useRandomWorkerPort = false;
+  let announcement = require('./announcement.json');
+  let typeQuery = require('./typeQuery.json');
 
   let discoveryHost = config.discovery.host;
 
@@ -57,10 +67,6 @@ const main = () => {
     server.loadHttpRoutes();
     server.listen().then(() => {
       console.log('Up and running..');
-      server.onProxyReady((proxy) => {
-        console.log("Yeah.. The Proxy is bound.");
-      });
-        
       if(announce === true) {
         server.announce();
       } else {
@@ -71,12 +77,6 @@ const main = () => {
     console.log(err);
   });
 
-  process.on('message', function(msg, socket) {
-      if (msg !== 'sticky-session:connection') return;
-      // Emulate a connection event on the server by emitting the
-      // event with the connection the master sent us.
-      server.getHttp().emit('connection', socket);
-  });
 }
 
 

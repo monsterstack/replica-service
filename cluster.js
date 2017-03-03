@@ -1,10 +1,14 @@
-'use strict';
+// 'use strict';
 const config = require('config');
 const Cluster = require('core-server').Cluster;
 
 const optimist = require('optimist');
-const _ = require('lodash');
 
+/**
+ * Start Cluster
+ * --numWorkers       How many child processes do we manager?  Default matches the number of cpu cores available.
+ * --discoveryHost    Where do I Announce myself?  Where is my Discovery Service
+ */
 const main = () => {
   console.log("Starting Cluster");
   let options = {};
@@ -24,6 +28,8 @@ const main = () => {
 
   let announcement = require('./announcement.json');
   let cluster = new Cluster(announcement.name, announcement, options);
+  //let exitHandler = proxy.exitHandlerFactory(cluster.id, model);
+  //cluster.bindExitHandler(exitHandler);
 
   cluster.start();
 

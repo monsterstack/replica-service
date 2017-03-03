@@ -1,0 +1,19 @@
+{
+  "port": 13616,
+  "discovery": {
+    "host": "10.10.11.116",
+    "port": 7616
+  },
+  "redis": {
+    "host": "redis.digitalfunk.io",
+    "port": 6379
+  },
+  "stash": {
+    "type": "tcp",
+    "host": "cdsp.digitalfunk.io",
+    "port": 9600
+  },
+  "websockets": {
+    "enabled": true
+  }
+}

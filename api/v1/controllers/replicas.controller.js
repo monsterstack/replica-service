@@ -17,3 +17,6 @@ const updateReplicas = (app) => {
         res.status(HttpStatus.OK).send({});
     }
 };
+
+exports.getReplicas = getReplicas;
+exports.updateReplicas = updateReplicas;
