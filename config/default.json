@@ -15,5 +15,8 @@
   },
   "websockets": {
     "enabled": true
+  },
+  "swarm": {
+    "host": "10.10.11.116"
   }
 }

@@ -29,6 +29,7 @@
  *   Replica:
  *      type: object
  *      required:
+ *          - id
  *          - serviceName
  *          - count
  *      properties:
