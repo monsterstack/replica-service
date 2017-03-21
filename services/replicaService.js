@@ -1,6 +1,7 @@
 'use strict';
 
 const needle = require('needle');
+const _ = require('lodash');
 
 class ReplicaService {
     constructor(options) {
@@ -50,6 +51,17 @@ class ReplicaService {
                     resolve(replica);
                 }
             });
+        });
+
+        return p;
+    }
+
+    scaleReplica(replica, increment) {
+        let self = this;
+        let p = new Promise((resolve, reject) => {
+            let myReplica = _.clone(replica);
+            myReplica.count += increment;
+            resolve(myReplica);
         });
 
         return p;
