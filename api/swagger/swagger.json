@@ -56,7 +56,7 @@
       "put": {
         "description": "Get Service Replicas Deployed in Swarm",
         "tags": [
-          "replica"
+          "replicas"
         ],
         "produces": [
           "application/json"
@@ -176,7 +176,7 @@
       "description": "Everything you need to know about Health"
     },
     {
-      "name": "replica",
+      "name": "replicas",
       "description": "Everything you need to know about Replica"
     }
   ]

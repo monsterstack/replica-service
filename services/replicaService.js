@@ -16,7 +16,9 @@ class ReplicaService {
         let self = this;
         let p = new Promise((resolve, reject) => {
             let baseUrl = self._buildBaseUrl();
-            needle.get(`${baseUrl}/services`, {}, (err, response) => {
+
+            // Handler for Needle GET
+            let handler = (err, response) => {
                 if(err) reject(err);
                 else {
                     let services = response.body;
@@ -30,7 +32,9 @@ class ReplicaService {
                     });
                     resolve(replicas);
                 }
-            });
+            };
+
+            needle.get(`${baseUrl}/services`, self._requestOptions(), handler);
         });
 
         return p;
@@ -38,22 +42,15 @@ class ReplicaService {
 
     findReplica(id) {
         let self = this;
-        let p = new Promise((resolve, reject) => {
-            let baseUrl = self._buildBaseUrl();
-            needle.get(`${baseUrl}/services/${id}`, {}, (err, response) => {
-                if(err) reject(err);
-                else {
-                    let service = response.body;
-                    let replica = {};
-                    replica.count = service.Spec.Mode.Replicated.Replicas;
-                    replica.name = service.Spec.Name;
-                    replica.id = service.ID;
-                    resolve(replica);
-                }
-            });
-        });
 
-        return p;
+        return self._fetchRawService(id).then((rawService) => {
+                let service = rawService;
+                let replica = {};
+                replica.count = service.Spec.Mode.Replicated.Replicas;
+                replica.name = service.Spec.Name;
+                replica.id = service.ID;
+                resolve(replica);
+        });
     }
 
     scaleReplica(replica, increment) {
@@ -67,9 +64,28 @@ class ReplicaService {
         return p;
     }
 
+    _fetchRawService(serviceId) {
+        let self = this;
+        let p = new Promise((resolve, reject) => {
+            let handler = (err, response) => {
+                if(err) reject(err);
+                else 
+                    resolve(response.body);
+            };
+
+            needle.get(`${baseurl}/services/${serviceId}`, self._requestOptions(), handler);
+        });
+
+        return p;
+    }
+
     _buildBaseUrl() {
         let self = this;
         return `http://${self.swarmHost}:${self.swarmPort}/v1.24`;
+    }
+
+    _requestOptions() {
+        return {};
     }
 }
 
